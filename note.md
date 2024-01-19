@@ -89,3 +89,17 @@ export default function Header() {
 }
 
 ```
+
+API
+- npm init -y
+- npm install express
+- npm install nodemon or install as devDependency
+
+```js
+ "scripts": {
+    "dev": "nodemon api/index.js",
+    "start": "node api/index.js"
+  },
+```
+npm run dev
+
