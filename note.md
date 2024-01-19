@@ -103,3 +103,42 @@ API
 ```
 npm run dev
 
+### Connect to DB
+
+`npm i mongoose`
+login to mongoDB site, create a new project 'mern-estate', create a DB
+create username, pswd
+select cloud environment
+0.0.0.0 ip address to access from anywhere
+finish , copy the URI
+
+```js
+mongoose.connect("mongodb+srv://username:password@mern-estate.3333r33.mongodb.net/clusterName?retryWrites=true&w=majority")
+```
+install `dotenv` package , to use `process.env.MONGO_URI`
+```sh
+npm install dotenv
+```
+
+```js
+import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
+
+mongoose
+  .connect(process.env.MONGO)
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+const app = express();
+
+app.listen(3000, () => {
+  console.log("Server is running on port 3000 !");
+});
+
+```
