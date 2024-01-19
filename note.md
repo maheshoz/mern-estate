@@ -49,3 +49,43 @@ export default function App() {
   </BrowserRouter>
 }
 ```
+
+```
+npm i react-icons
+```
+create and add the navbar and installed react-icons package
+
+```js
+import {FaSearch} from "react-icons/fa";
+import { Link } from "react-router-dom";
+
+export default function Header() {
+  return (
+    <header className='bg-slate-200 shadow-md'>
+      <div>
+        <Link to='/'>
+         ....
+        </Link>
+         <form >
+          <input type="text" placeholder='Search...'/>
+          <FaSearch className="text-slate-600"/>
+        </form>
+
+        <ul className="flex gap-4">
+          <Link to='/'>
+           ..
+          </Link>
+          <Link to='/about'>
+           ..
+          </Link>
+          <Link to='/sign-in'>
+           ..
+          </Link>
+        </ul>
+
+      </div>
+    </header>
+  )
+}
+
+```
