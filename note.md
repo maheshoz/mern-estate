@@ -142,3 +142,30 @@ app.listen(3000, () => {
 });
 
 ```
+
+### Create user model
+
+```js
+import mongoose from "mongoose";
+
+const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  password: {
+    type: string,
+    required: true
+  }
+}, { timestamps: true}); //for created, updated timestamps
+
+const User = mongoose.model('User', userSchema); // use Singular 'User', mongoDB will create Users table/document
+
+export default User;
+```
