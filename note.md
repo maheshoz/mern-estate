@@ -169,3 +169,36 @@ const User = mongoose.model('User', userSchema); // use Singular 'User', mongoDB
 
 export default User;
 ```
+
+When we do POST to http://localhost:3000/api/auth/signup we get undefined from req.body
+we need to allow json parsing in server, add below middleware
+```js
+app.use(express.json());
+```
+
+install bcryptjs to has the password
+```js
+$ npm i bcryptjs
+```
+
+```js
+import User from "../models/user.model.js";
+import bcryptjs from "bcryptjs";
+
+export const signup = async (req, res) => {
+  console.log(req.body);
+
+  const { username, email, password} = req.body;
+  const hashedPassword = bcryptjs.hashSync(password, 10)
+
+  const newUser = new User({username, email, password: hashedPassword});
+
+  try {
+    await newUser.save()
+    res.status(201).json("User created successfully");
+    
+  } catch (error) {
+    res.status(500).json(error.message)
+  }
+}
+```
