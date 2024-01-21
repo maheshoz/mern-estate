@@ -202,3 +202,22 @@ export const signup = async (req, res) => {
   }
 }
 ```
+
+
+create proxy for api's in client
+```js
+//vite.config.js
+
+export default defineConfig({
+  server: {
+    proxy: {
+      '/api': {
+        target : 'http://localhost:3000',
+        secure: false,
+      },
+    },
+  },
+  plugins: [react()],
+})
+
+```
