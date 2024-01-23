@@ -370,3 +370,48 @@ install Redux DevTools chrome extension
 
 on reload, the redux states/snapshots are lost so we will new package redux-persist to have redux state changes
 
+```sh
+npm i redux-persist
+```
+https://www.npmjs.com/package/redux-persist
+
+```js
+// store.js
+
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import userReducer from './user/userSlice.js';
+import { persistReducer, persistStore } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+
+const rootReducer = combineReducers({user: userReducer});
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  version: 1,
+}
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+});
+
+export const persistor = persistStore(store);
+```
+
+```js
+import { persistor, store } from './redux/store.js';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+
+  <Provider store={ store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <App />
+    </PersistGate>
+  </Provider>,
+```
