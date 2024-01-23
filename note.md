@@ -259,3 +259,114 @@ export const signin = async (req, res, next) => {
   }
 }
 ```
+
+
+### add redux-toolkit to persist user data
+
+https://redux-toolkit.js.org/tutorials/quick-start
+
+installing in the client side
+```sh
+npm install @reduxjs/toolkit react-redux
+```
+
+```js
+//store.js
+import { configureStore } from "@reduxjs/toolkit";
+import userReducer from './user/userSlice.js'
+
+export const store = configureStore({
+  reducer: {user: userReducer},
+  // middleware to remove browser error for serialzing
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
+});
+
+```
+
+```js
+//userSlice.js
+
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+  currentUser : null,
+  error: null,
+  loading: false,
+};
+
+const userSlice = createSlice({
+  name: 'user',
+  initialState,
+  reducers: {
+    signInStart: (state) => {
+      state.loading = true;
+    },
+    signInSuccess: (state, action) => {
+      state.currentUser = action.payload;
+      state.loading = false;
+      state.error = false;
+    },
+    signInFailure: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+  }
+});
+console.log(userSlice);
+
+export const { signInStart, signInSuccess, signInFailure} = userSlice.actions;
+
+export default userSlice.reducer;
+```
+
+```js
+//SignIn.jsx
+
+import { useDispatch, useSelector } from 'react-redux';
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
+
+  // const [error, setError] = useState(null);
+  // const [loading, setLoading] = useState(false);
+  const { loading, error} = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+ ...
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // setLoading(true);
+      dispatch(signInStart());
+      const res = await fetch('/api/auth/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      console.log(data);
+      if (data.success === false) {
+        // setLoading(false);
+        // setError(data.message);
+        dispatch(signInFailure(data.message));
+        return;
+      }
+      // setLoading(false);
+      // setError(null);
+      dispatch(signInSuccess(data));
+      navigate('/');
+    } catch (error) {
+      // setLoading(false);
+      // setError(error.message);
+      dispatch(signInFailure(error.message));
+    }
+
+```
+
+install Redux DevTools chrome extension
+
+on reload, the redux states/snapshots are lost so we will new package redux-persist to have redux state changes
+
