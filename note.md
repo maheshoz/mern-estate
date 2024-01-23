@@ -415,3 +415,111 @@ import { PersistGate } from 'redux-persist/integration/react';
     </PersistGate>
   </Provider>,
 ```
+
+### add google OAuth
+
+create button component
+
+create a new project in firebase
+
+```sh
+npm install firebase
+```
+create new .env and hide the firebase API key
+choose google provider from Auth menu
+
+
+use http://localhost:5173/sign-in 
+
+OAuth component
+```js
+import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
+import { app } from '../firebase';
+import { useDispatch } from 'react-redux';
+import { signInSuccess } from '../redux/user/userSlice.js';
+import { useNavigate } from 'react-router-dom';
+
+export default function OAuth() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleGoogleClick = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const auth = getAuth(app);
+
+      const result = await signInWithPopup(auth, provider);
+      console.log('signIn result ' + result);
+
+      const res = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: result.user.displayName,
+          email: result.user.email,
+          photo: result.user.photoURL,
+        }),
+      });
+      const data = await res.json();
+      dispatch(signInSuccess(data));
+      navigate("/");
+
+    } catch (error) {
+      console.log("could not sign in with google ", error);
+    }
+  };
+  
+  return (
+      <button
+        onClick={handleGoogleClick}
+        type='button'>Continue with Google </button>
+  );
+}
+
+```
+google controller
+
+```js
+
+export const google = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    // if user exists 
+    if (user) {
+      const token = jwt.sign({ id: user._id}, process.env.JWT_SECRET);
+      const { password: pass, ...rest} = user._doc;
+      res
+        .cookie('access_token', token, { httpOnly : true })
+        .status(200)
+        .json(rest);
+    } else {
+    // if doesn't exist, create random pswd and add, generate username from res name, add photo
+      const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+      const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+     
+      const newUser = new User({ 
+        username: req.body.name.split(" ").join("").toLowerCase() + Math.random().toString(36).slice(-4),
+        email: req.body.email,
+        password: hashedPassword,
+        avatar: req.body.photo
+      });
+
+      await newUser.save();
+
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+      const { password: pass, ...rest} = newUser._doc;
+      
+      res
+        .cookie('access_token', token, { httpOnly : true })
+        .status(200)
+        .json(rest);
+
+    }
+  } catch (error) {
+    next(error)
+  }
+}
+```
+
