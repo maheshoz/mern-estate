@@ -560,6 +560,7 @@ updateUser request user  { id: '65ad6f98bfbbe5f85a7eab45', iat: 1706185704 }
 delete User
 
 ```js
+// controller
 export const deleteUser = async (req, res, next) => {
 
   if (req.user.id !== req.params.id) return next(errorHandler(401, 'You can only delete your own account'));
@@ -573,4 +574,53 @@ export const deleteUser = async (req, res, next) => {
     next(error);
   }
 }
+
+//Profile.jsx
+ const handleDeleteUser = async () => {
+    try {
+        dispatch(deleteUserStart());
+        const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+          method: 'DELETE',
+        });
+        const data = await res.json();
+        // console.log('delete data', data);
+        if (data.success === false) {
+          dispatch(deleteUserFailure(data.message));
+          return;
+        }
+        dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  }
+```
+
+SignOut user
+
+```js
+//controller
+export const signOut = async (req, res, next) => {
+  try {
+    res.clearCookie('access_token');
+    res.status(200).json('User has been logged out!');
+  } catch (error) {
+    next(error)
+  }
+}
+
+//jsx
+  const handleSignOut = async ()=> {
+    try {
+      dispatch(signOutUserStart());
+      const res = await fetch('/api/auth/signout');
+      const data = await res.json();
+      if( data.success === false) {
+        dispatch(signOutUserFailure(data.message));
+        return;
+      }
+      dispatch(signOutUserSuccess(data));
+    } catch (error) {
+      dispatch(signOutUserFailure(error.message));
+    }
+  }
 ```
