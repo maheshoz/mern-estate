@@ -523,3 +523,21 @@ export const google = async (req, res, next) => {
 }
 ```
 
+### file upload
+
+Firebase storage
+
+rules - allow all type of images and if size is less than 2MB
+2 * 1024(1KB) * 1024(1KB) , 2 * 1MB
+```js
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read;
+      allow write: if
+      request.resource.size < 2 * 1024 * 1024 &&
+      request.resource.contentType.matches('image/.*')
+    }
+  }
+}
+```
