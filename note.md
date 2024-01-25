@@ -541,3 +541,18 @@ service firebase.storage {
   }
 }
 ```
+
+install cookie-parser to access the cookie from cilent in nodejs server
+
+```sh
+npm i cookie-parser
+```
+
+```js
+req cookies  {
+  access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWQ2Zjk4YmZiYmU1Zjg1YTdlYWI0NSIsImlhdCI6MTcwNjE4NTcwNH0.mUFkZW6eHyxzwx1JD8HLMXnykMC_S_RExB4bt6coX_Q'
+}
+updateUser request body { username: 'userOne' }
+updateUser request params  { id: '65ad6f98bfbbe5f85a7eab45' }
+updateUser request user  { id: '65ad6f98bfbbe5f85a7eab45', iat: 1706185704 }
+```
