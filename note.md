@@ -556,3 +556,21 @@ updateUser request body { username: 'userOne' }
 updateUser request params  { id: '65ad6f98bfbbe5f85a7eab45' }
 updateUser request user  { id: '65ad6f98bfbbe5f85a7eab45', iat: 1706185704 }
 ```
+
+delete User
+
+```js
+export const deleteUser = async (req, res, next) => {
+
+  if (req.user.id !== req.params.id) return next(errorHandler(401, 'You can only delete your own account'));
+
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    // clear cookie in client
+    res.clearCookie('access_token');
+    res.status(200).json('User has been deleted!');
+  } catch (error) {
+    next(error);
+  }
+}
+```
