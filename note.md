@@ -665,3 +665,10 @@ export default function Listing() {
   )
 }
 ```
+format amount
+```js
+(123456.789).toLocaleString('en-US')
+// '123,456.789'
+(123456.789).toLocaleString('hi') // hindi
+// '1,23,456.789'
+```
