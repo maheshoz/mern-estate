@@ -624,3 +624,44 @@ export const signOut = async (req, res, next) => {
     }
   }
 ```
+
+install swiper 
+
+```sh
+npm i swiper
+```
+
+```jsx
+...
+import { Swiper, SwiperSlide} from 'swiper/react';
+import SwiperCore from 'swiper';
+import { Navigation} from 'swiper/modules';
+import 'swiper/css/bundle';
+
+export default function Listing() {
+  SwiperCore.use( [Navigation]);
+  ...
+
+  return (
+    ...
+    {listing && !loading && !error && (
+        <div>
+          <Swiper navigation>
+            {listing.imageUrls.map((url) => (
+              <SwiperSlide key={url}>
+                <div
+                  className='h-[500px]'
+                  style={{
+                    background: `url(${url}) center no-repeat`,
+                    backgroundSize: 'cover',
+                  }}
+                ></div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      )}
+      ...
+  )
+}
+```
