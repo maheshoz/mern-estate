@@ -680,3 +680,32 @@ npm install -D @tailwindcss/line-clamp
 ```
 line-clamp is installed by default in tailwaind new version
 
+
+Before deployment
+
+add build script in server package.json
+```js
+  "scripts": {
+    "dev": "nodemon api/index.js",
+    "start": "node api/index.js",
+    "build": "npm install && npm install --prefix client && npm run build --prefix client"
+  },
+
+
+```
+
+
+index.js
+```js
+...
+import path from "path";
+
+const __dirname = path.resolve();
+...
+app.use(express.static(path.join(__dirname, '/client/dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+})
+
+```
