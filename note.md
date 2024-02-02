@@ -709,3 +709,10 @@ app.get('*', (req, res) => {
 })
 
 ```
+import the repo in render and connect
+![Alt text](image.png)
+
+choose free type and add env variables
+JWT_SECRET, MONGO, VITE_FIREBASE_API_KEY
+
+in firebase, add the deployed url in Authenticatoin>settings>Authorized domains 
