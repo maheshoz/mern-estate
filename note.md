@@ -672,3 +672,11 @@ format amount
 (123456.789).toLocaleString('hi') // hindi
 // '1,23,456.789'
 ```
+
+https://www.npmjs.com/package/@tailwindcss/line-clamp
+
+```sh
+npm install -D @tailwindcss/line-clamp
+```
+line-clamp is installed by default in tailwaind new version
+
